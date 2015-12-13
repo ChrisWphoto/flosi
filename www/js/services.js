@@ -22,7 +22,7 @@ angular.module('flosi.services', ["firebase"])
         email: false,
         img: "../img/empty-profile.png",
         uid: false,
-        challenges: []
+        challenges: [1] //default value so that fb will store it as an array
       },
 
       tokExpires: false,
@@ -41,12 +41,14 @@ angular.module('flosi.services', ["firebase"])
           console.log("created user: ", userData.uid);
           defer.resolve(true);
           //save locally
+          console.log(o.profile);
           o.profile.name = user.name;
           o.profile.email = user.email;
           o.profile.uid = userData.uid;
 
           //save user data to fb
           ref.child('users/' + userData.uid).set(o.profile);
+          console.log('saving new user to fb', o.profile);
         }
       });
       return defer.promise;
@@ -116,14 +118,19 @@ angular.module('flosi.services', ["firebase"])
         });
     };
 
-    o.pushChallengeObj = function (challenge, cb) {
-      ref.child('challenges/' + challenge.challengeId).set(challenge);
-      ref.child('users/' + challenge.uid1 + '/challenges').set(challenge.challengeId);
-      ref.child('users/' + challenge.uid2 + '/challenges').set(challenge.challengeId);
-
-      //locally add challengeId
+    o.pushChallengeObj = function (challenge, friend, cb) {
+      //local push challengeID
       o.profile.challenges.push(challenge.challengeId);
+      //remote push challengeID
+      console.log(o.profile.challenges);
+      ref.child('users/' + challenge.uid1 + '/challenges').set(o.profile.challenges);
+
       o.currentChallenge = challenge;
+
+      //remote add new challenge
+      ref.child('challenges/' + challenge.challengeId).set(challenge);
+      //remote add challengeId to friends profile
+      ref.child('users/' + challenge.uid2 + '/challenges').set(friend.challenges);
       cb(true);
     };
 

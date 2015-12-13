@@ -20,16 +20,16 @@ angular.module('flosi.controllers',
                 $rootScope.hide();
               }
             })
-        } else{
+        } else {
           $scope.badLogin = 'User was not found';
           $rootScope.hide();
         }
       });
     };
 
-    $scope.registerUser = function(form) {
+    $scope.registerUser = function (form) {
       $rootScope.show();
-      auth.registerUser(form).then(function(success){
+      auth.registerUser(form).then(function (success) {
         if (success) $scope.submitLogin(form);
 
         else {
@@ -39,45 +39,41 @@ angular.module('flosi.controllers',
       })
     };
 
-    $scope.goSignUp = function() {
+    $scope.goSignUp = function () {
       $state.go('signup');
     };
 
   })
 
-.controller('DashCtrl', function($rootScope, $scope, auth, $cordovaCamera, $ionicModal, $state, authData) {
-    $scope.$on('$ionicView.enter', function(e) {
+  .controller('DashCtrl', function ($rootScope, $scope, auth, $cordovaCamera, $ionicModal, $state, authData) {
+    $scope.$on('$ionicView.enter', function (e) {
       $rootScope.show();
       console.log('checking if local profile exists', auth.profile.name)
-     if (!auth.profile.name){
-       auth.profileFromFb(authData.uid).then(function(success){
-         if (success) {
-           $scope.user = auth.profile;
-           console.log('$scope.user', $scope.user);
-         }
-         else console.log('profileNotPopulated', $scope.user )
-       })
-     } else {
-       $scope.user = auth.profile;
-     }
+      if (!auth.profile.name) {
+        auth.profileFromFb(authData.uid).then(function (success) {
+          if (success) {
+            $scope.user = auth.profile;
+            console.log('$scope.user', $scope.user);
+          }
+          else console.log('profileNotPopulated', $scope.user)
+        })
+      } else {
+        $scope.user = auth.profile;
+      }
       $rootScope.hide();
     });
 
 
-
     $ionicModal.fromTemplateUrl('templates/modal-invite.html', {
       scope: $scope
-    }).then(function(modal) {
+    }).then(function (modal) {
       $scope.modal = modal;
-
     });
-
     // Triggered in the login modal to close it
-    $scope.showModal = function() {
+    $scope.showModal = function () {
       console.log('show modal');
       $scope.modal.show();
     };
-
     $scope.hideModal = function () {
       $scope.modal.hide();
     };
@@ -88,17 +84,17 @@ angular.module('flosi.controllers',
     $scope.search = function (name) {
       $scope.searchErr = false;
       $rootScope.show();
-      auth.findUserByName(name, function (err,user) {
+      auth.findUserByName(name, function (err, user) {
         if (err) {
           $scope.searchErr = "User Not Found";
           $rootScope.hide();
         }
         else {
           $scope.$apply(function () {
-            $scope.searchedForUser = user;
-            console.log('searchedforUser', user)
-            $scope.searchedForUser.challengeId = Date.now();
             $rootScope.hide();
+            $scope.searchedForUser = user;
+            $scope.searchedForUser.challenges.push(Date.now());
+            console.log('searchedForUser', $scope.searchedForUser);
           });
         }
       });
@@ -110,39 +106,14 @@ angular.module('flosi.controllers',
       $state.go('tab.dash-challenge');
     };
 
-    $scope.createChallenge = function (form) {
-      var challengeObj = {
-        challengeId : $scope.searchedForUser.challengeId,
-        name1 : $scope.user.name,
-        uid1 : $scope.user.uid,
-        name2 : $scope.searchedForUser.name,
-        uid2 : $scope.searchedForUser.uid,
-        title : form.title,
-        days : form.days,
-        numPhotos : form.numPhotos,
-        bet : form.bet,
-        winner : false,
-        status: {
-          open : true,
-          rejected : false,
-          accepted : false,
-          closed : false
-        }
-      };
 
-      auth.pushChallengeObj(challengeObj, function(success){
-        if (success) $state.go('tab.stream');
-      });
-    };
-
-
-    $scope.upload = function() {
+    $scope.upload = function () {
       console.log('inside upload function');
       var options = {
-        quality : 70,
-        destinationType : Camera.DestinationType.DATA_URL,
-        sourceType : Camera.PictureSourceType.CAMERA,
-        allowEdit : true,
+        quality: 70,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: true,
         encodingType: Camera.EncodingType.JPEG,
         popoverOptions: CameraPopoverOptions,
         targetWidth: 500,
@@ -152,20 +123,58 @@ angular.module('flosi.controllers',
 
       try {
         $cordovaCamera.getPicture(options).then(function (imageData) {
-          $scope.user.img = "data:image/jpeg;base64,"+imageData;
+          $scope.user.img = "data:image/jpeg;base64," + imageData;
           auth.updateProfileImg(); //persist to fb
         }, function (error) {
           console.error(error);
         });
-      } catch (err){
+      } catch (err) {
         throw " fatal error camera crashed unavailable";
       }
     }
   })
 
 
-  .controller('StreamCtrl', function($scope, auth, $state, $cordovaCamera, $firebaseArray) {
-    $scope.$on('$ionicView.enter', function(e) {
+  .controller('InviteCtrl', function ($scope, auth, $state) {
+    $scope.$on('$ionicView.enter', function (e) {
+      $scope.friend = auth.challengeInvite;
+      $scope.user = auth.profile;
+
+      console.log('friend/user', $scope.friend, $scope.user);
+    });
+
+
+    $scope.createChallenge = function (form) {
+      var currentChallengeId = $scope.friend.challenges.length - 1;
+      var challengeObj = {
+        challengeId: $scope.friend.challenges[currentChallengeId],
+        name1: $scope.user.name,
+        uid1: $scope.user.uid,
+        name2: $scope.friend.name,
+        uid2: $scope.friend.uid,
+        title: form.title,
+        days: form.days,
+        numPhotos: form.numPhotos,
+        bet: form.bet,
+        winner: false,
+        status: {
+          open: true,
+          rejected: false,
+          accepted: false,
+          closed: false
+        }
+      };
+      console.log(challengeObj);
+      auth.pushChallengeObj(challengeObj, $scope.friend, function (success) {
+        if (success) $state.go('tab.stream');
+      });
+    };
+
+  })
+
+
+  .controller('StreamCtrl', function ($scope, auth, $state, $cordovaCamera, $firebaseArray) {
+    $scope.$on('$ionicView.enter', function (e) {
       $scope.streamInfo = auth.currentChallenge;
       $scope.userInfo = auth;
       $scope.images = [];
@@ -178,12 +187,12 @@ angular.module('flosi.controllers',
     var syncArray = $firebaseArray(userReference.child("images"));
     $scope.images = syncArray;
 
-    $scope.upload = function() {
+    $scope.upload = function () {
       var options = {
-        quality : 75,
-        destinationType : Camera.DestinationType.DATA_URL,
-        sourceType : Camera.PictureSourceType.CAMERA,
-        allowEdit : true,
+        quality: 75,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: true,
         encodingType: Camera.EncodingType.JPEG,
         popoverOptions: CameraPopoverOptions,
         targetWidth: 500,
@@ -199,45 +208,53 @@ angular.module('flosi.controllers',
         }, function (error) {
           console.error(error);
         });
-      } catch (err){
+      } catch (err) {
         throw " fatal error camera crashed unavailable";
       }
     }
 
   })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
 
-  //$scope.$on('$ionicView.enter', function(e) {
-  //
-  //});
+  .controller('AccountCtrl', function ($rootScope, $scope, fbAuth, $state, auth) {
+    $scope.logout = function () {
+      $rootScope.show();
+      fbAuth.$unauth();
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
-})
+      //reset local data to defualts
+      auth.profile = {
+        name: false,
+        email: false,
+        img: "../img/empty-profile.png",
+        uid: false,
+        challenges: [1] //default value so that fb will store it as an array
+      };
+      auth.tokExpires = false;
+      setTimeout(function () {
+        $rootScope.hide()
+        $state.go('login');
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
+      }, 500)
 
-.controller('AccountCtrl', function($rootScope, $scope, fbAuth, $state, auth) {
-  $scope.logout = function (){
-    $rootScope.show();
-    fbAuth.$unauth();
-    auth.profile = {};
-    auth.tokExpires = false;
-    setTimeout(function(){
-      $rootScope.hide()
-      $state.go('login');
+    }
+  })
 
-    }, 500)
+  .controller('ChatsCtrl', function ($scope, Chats) {
+    // With the new view caching in Ionic, Controllers are only called
+    // when they are recreated or on app start, instead of every page change.
+    // To listen for when this page is active (for example, to refresh data),
+    // listen for the $ionicView.enter event:
+    //
 
-  }
-});
+    //$scope.$on('$ionicView.enter', function(e) {
+    //
+    //});
+
+    $scope.chats = Chats.all();
+    $scope.remove = function (chat) {
+      Chats.remove(chat);
+    };
+  })
+  .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
+    $scope.chat = Chats.get($stateParams.chatId);
+  })

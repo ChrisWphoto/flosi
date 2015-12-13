@@ -96,7 +96,7 @@ angular.module('flosi', ['ionic', 'flosi.controllers', 'flosi.services', "fireba
         views: {
           'tab-dash': {
             templateUrl: 'templates/dash-challenge.html',
-            controller: 'DashCtrl'
+            controller: 'InviteCtrl'
           }
         }
       })
