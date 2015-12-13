@@ -2,7 +2,7 @@
   <ion-content class="padding">
 
     <div class="versus-photo">
-    <img class="versus-profile" ng-src="{{user.challengeInvite.img}}">
+    <img class="versus-profile" ng-src="{{searchedForUser.img}}">
       <span id="versus-id">VS</span>
     <img class="versus-profile" ng-src="{{user.img}}" >
     </div>
@@ -31,6 +31,7 @@
       </ion-list>
       <button class="button button-stable button-block " ng-click="createChallenge(form)">Sign Up</button>
 
+      <div class="login-err" ng-show="searchErr"> {{searchErr}}</div>
 
 
 

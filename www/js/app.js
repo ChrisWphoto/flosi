@@ -101,7 +101,6 @@ angular.module('flosi', ['ionic', 'flosi.controllers', 'flosi.services', "fireba
         }
       })
 
-
       .state('tab.chats', {
         url: '/chats',
         views: {

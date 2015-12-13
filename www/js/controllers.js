@@ -63,7 +63,7 @@ angular.module('flosi.controllers',
       $rootScope.hide();
     });
 
-    $scope.searchedForUser = false;
+
 
     $ionicModal.fromTemplateUrl('templates/modal-invite.html', {
       scope: $scope
@@ -82,13 +82,23 @@ angular.module('flosi.controllers',
       $scope.modal.hide();
     };
 
+
+    //$scope.searchedForUser = false;
+
     $scope.search = function (name) {
+      $scope.searchErr = false;
+      $rootScope.show();
       auth.findUserByName(name, function (err,user) {
-        if (err) $scope.searchedForUser = err;
+        if (err) {
+          $scope.searchErr = "User Not Found";
+          $rootScope.hide();
+        }
         else {
           $scope.$apply(function () {
             $scope.searchedForUser = user;
+            console.log('searchedforUser', user)
             $scope.searchedForUser.challengeId = Date.now();
+            $rootScope.hide();
           });
         }
       });
@@ -96,7 +106,6 @@ angular.module('flosi.controllers',
 
     $scope.selectChallengeFriend = function (friend) {
       auth.saveChallenge(friend);
-      console.log($scope.user);
       $scope.hideModal();
       $state.go('tab.dash-challenge');
     };
@@ -228,7 +237,7 @@ angular.module('flosi.controllers',
       $rootScope.hide()
       $state.go('login');
 
-    }, 1000)
+    }, 500)
 
   }
 });
