@@ -6,26 +6,35 @@ angular.module('flosi.controllers',
   ])
 
 
-  .controller('loginCtrl', function ($scope, auth, $state) {
-
-    $scope.badLogin;
-    $scope.submitLogin = function(form){
-      auth.signInUser(form).then(function (success) {
-        if(success) auth.updateLocalProfile(function(updated){
-          if (updated)
-            $state.go('tab.dash');
-          else
-            $scope.badLogin = 'User was not found';
-        });
+  .controller('loginCtrl', function ($rootScope, $scope, auth, $state) {
+    $scope.submitLogin = function (form) {
+      $rootScope.show();
+      $scope.badLogin;
+      auth.signInUser(form).then(function (authData) {
+        if (authData) {
+          auth.profileFromFb(authData.uid)
+            .then(function (updated) {
+              if (updated)
+                $state.go('tab.dash');
+              else {
+                $rootScope.hide();
+              }
+            })
+        } else{
+          $scope.badLogin = 'User was not found';
+          $rootScope.hide();
+        }
       });
     };
 
     $scope.registerUser = function(form) {
+      $rootScope.show();
       auth.registerUser(form).then(function(success){
         if (success) $scope.submitLogin(form);
 
         else {
           $scope.badLogin = 'There was a problem sorry!'
+          $rootScope.hide();
         }
       })
     };
@@ -36,10 +45,22 @@ angular.module('flosi.controllers',
 
   })
 
-.controller('DashCtrl', function($scope, auth, $cordovaCamera, $ionicModal, $state) {
-
+.controller('DashCtrl', function($rootScope, $scope, auth, $cordovaCamera, $ionicModal, $state, authData) {
     $scope.$on('$ionicView.enter', function(e) {
-      $scope.user = auth;
+      $rootScope.show();
+      console.log('checking if local profile exists', auth.profile.name)
+     if (!auth.profile.name){
+       auth.profileFromFb(authData.uid).then(function(success){
+         if (success) {
+           $scope.user = auth.profile;
+           console.log('$scope.user', $scope.user);
+         }
+         else console.log('profileNotPopulated', $scope.user )
+       })
+     } else {
+       $scope.user = auth.profile;
+     }
+      $rootScope.hide();
     });
 
     $scope.searchedForUser = false;
@@ -81,27 +102,12 @@ angular.module('flosi.controllers',
     };
 
     $scope.createChallenge = function (form) {
-      /*
-      * create a challengeObj
-      *   n1
-      *   n2
-      *   winner
-      *   status
-      *     open
-      *     accepted
-      *     closed
-      *     rejected
-      *
-      * update users with their new challengeIds
-      *
-      * */
-
       var challengeObj = {
-        challengeId : $scope.user.challengeInvite.challengeId,
+        challengeId : $scope.searchedForUser.challengeId,
         name1 : $scope.user.name,
         uid1 : $scope.user.uid,
-        name2 : $scope.user.challengeInvite.name,
-        uid2 : $scope.user.challengeInvite.uid,
+        name2 : $scope.searchedForUser.name,
+        uid2 : $scope.searchedForUser.uid,
         title : form.title,
         days : form.days,
         numPhotos : form.numPhotos,
@@ -146,7 +152,6 @@ angular.module('flosi.controllers',
         throw " fatal error camera crashed unavailable";
       }
     }
-
   })
 
 
@@ -213,8 +218,17 @@ angular.module('flosi.controllers',
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
+.controller('AccountCtrl', function($rootScope, $scope, fbAuth, $state, auth) {
+  $scope.logout = function (){
+    $rootScope.show();
+    fbAuth.$unauth();
+    auth.profile = {};
+    auth.tokExpires = false;
+    setTimeout(function(){
+      $rootScope.hide()
+      $state.go('login');
+
+    }, 1000)
+
+  }
 });

@@ -1,7 +1,7 @@
 <ion-view title="Login">
   <ion-content overflow-scroll="true" padding="'true'" scroll="false" class="has-header">
     <div class="logo">Flosi</div>
-    <h4 ng-show="badLogin"> {{badLogin}}</h4>
+    <div class="login-err" ng-show="badLogin"> {{badLogin}}</div>
     <form class="list">
       <ion-list>
 
@@ -15,36 +15,12 @@
         </label>
       </ion-list>
       <button class="button button-stable button-block " ng-click="submitLogin(form)">Login</button>
-        <div ng-click="goSignUp()">Need to Sign up?</div>
+        <div id="go-sign-up" ng-click="goSignUp()"><a>Need to Sign up?</a></div>
     </form>
   </ion-content>
 </ion-view>
 
 
 <div>
-<!--<ion-view view-title="Flosi" hide-nav-bar="true" class="splash-page">-->
-  <!--<ion-content scroll="false">-->
 
-    <!--<div class="padding logo">-->
-      <!--<h1>Login</h1>-->
-    <!--</div>-->
-
-
-    <!-- -->
-
-      <!--<div class="padding-left padding-right">-->
-        <!--<button class="button button-block action-button" ng-class="{'button-positive': !form.signingUp, 'button-balanced': form.signingUp}"-->
-                <!--ng-click="submitForm(form.username, form.signingUp)">-->
-          <!--{{ form.signingUp ? 'Sign up' : 'Sign in' }}-->
-        <!--</button>-->
-      <!--</div>-->
-    <!--</div>-->
-
-
-    <!--<div class="padding signup-opt" ng-click="form.signingUp = !form.signingUp">-->
-      <!--{{ form.signingUp ? 'Have an account? Sign in!' : 'Need an account? Sign up!' }}-->
-    <!--</div>-->
-
-  <!--</ion-content>-->
-<!--</ion-view>-->
 </div>

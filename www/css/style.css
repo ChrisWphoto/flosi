@@ -1,3 +1,19 @@
+.login-err{
+  color: orangered;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  margin: 10px auto;
+}
+
+#go-sign-up {
+  color: white;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  margin: 20px auto;
+}
+
 .logo {
   text-align:center;
   width: 100%;
@@ -7,7 +23,6 @@
   font-size:52px;
   margin: 30px auto;
 }
-
 
 #profileImg {
   width: 75px;
@@ -26,9 +41,7 @@
 .versus-profile{
   width: 80px;
   height: 80px;
-
   border-radius: 25%;
-
 }
 
 #versus-id{
