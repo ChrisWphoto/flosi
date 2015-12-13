@@ -1,0 +1,39 @@
+<ion-view title="Challenge Stream" ng-init="">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon icon ion-camera" ng-click="upload()"></button>
+  </ion-nav-buttons>
+  <ion-content>
+
+    <div class="card">
+      <div class="item item-text-wrap">
+        <h1>{{streamInfo.title}} Challenge</h1>
+        <h3>with: {{streamInfo.name2}}</h3>
+        Length of Challenge: {{streamInfo.days}} <br/>
+        Number of photos you've uploaded: 3/10
+
+      </div>
+    </div>
+
+
+    <div class="list card" ng-repeat="image in images">
+
+      <div class="item item-avatar">
+        <img ng-src="{{userInfo.img}}"/>
+
+        <h2>PigHead</h2>
+        <p>By Marmot Brains</p>
+      </div>
+
+      <div class="item item-image">
+        <img ng-src="data:image/jpeg;base64,{{images[$index].image}}" width="100%" />
+      </div>
+
+      <a class="item item-icon-left assertive" href="#">
+        <i class="icon ion-aperture"></i>
+        {{$index +1}} of 10 photos
+      </a>
+
+    </div>
+
+  </ion-content>
+</ion-view>

@@ -1,0 +1,50 @@
+<ion-view title="Login">
+  <ion-content overflow-scroll="true" padding="'true'" scroll="false" class="has-header">
+    <div class="logo">Flosi</div>
+    <h4 ng-show="badLogin"> {{badLogin}}</h4>
+    <form class="list">
+      <ion-list>
+
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="email" placeholder="" ng-model="form.email">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="text" placeholder="" ng-model="form.password">
+        </label>
+      </ion-list>
+      <button class="button button-stable button-block " ng-click="submitLogin(form)">Login</button>
+        <div ng-click="goSignUp()">Need to Sign up?</div>
+    </form>
+  </ion-content>
+</ion-view>
+
+
+<div>
+<!--<ion-view view-title="Flosi" hide-nav-bar="true" class="splash-page">-->
+  <!--<ion-content scroll="false">-->
+
+    <!--<div class="padding logo">-->
+      <!--<h1>Login</h1>-->
+    <!--</div>-->
+
+
+    <!-- -->
+
+      <!--<div class="padding-left padding-right">-->
+        <!--<button class="button button-block action-button" ng-class="{'button-positive': !form.signingUp, 'button-balanced': form.signingUp}"-->
+                <!--ng-click="submitForm(form.username, form.signingUp)">-->
+          <!--{{ form.signingUp ? 'Sign up' : 'Sign in' }}-->
+        <!--</button>-->
+      <!--</div>-->
+    <!--</div>-->
+
+
+    <!--<div class="padding signup-opt" ng-click="form.signingUp = !form.signingUp">-->
+      <!--{{ form.signingUp ? 'Have an account? Sign in!' : 'Need an account? Sign up!' }}-->
+    <!--</div>-->
+
+  <!--</ion-content>-->
+<!--</ion-view>-->
+</div>

@@ -1,0 +1,38 @@
+.logo {
+  text-align:center;
+  width: 100%;
+  color: #fff;
+  font-family: Verdana, Geneva, sans-serif;
+  font-weight:bold;
+  font-size:52px;
+  margin: 30px auto;
+}
+
+
+#profileImg {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  border: solid white;
+}
+.padding {
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(122, 188, 255, 1)), color-stop(44%, rgba(96, 171, 248, 1)), color-stop(100%, rgba(64, 150, 238, 1)));
+}
+
+.versus-photo{
+  text-align: center;
+  width:100%;}
+
+.versus-profile{
+  width: 80px;
+  height: 80px;
+
+  border-radius: 25%;
+
+}
+
+#versus-id{
+  font-size: 40px;
+  color: white;
+  padding: 0 20px 0 20px;
+}

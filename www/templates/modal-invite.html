@@ -1,0 +1,42 @@
+<ion-modal-view class = "modal-search">
+  <ion-header-bar>
+    <h1 class="title">Search</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="hideModal()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content scroll="false">
+
+
+
+      <h2>Who do you want to Challenge?</h2>
+
+    <form class="list" >
+      <ion-list>
+
+        <label class="item item-input">
+          <span class="input-label">Friends Name</span>
+          <input type="text" placeholder="" ng-model="name">
+        </label>
+      </ion-list>
+      <button class="button button-stable button-block " ng-click="search(name)">Search</button>
+
+    </form>
+
+    <ion-list ng-show="searchedForUser">
+      <ion-item class="item-thumbnail-left"
+        ng-click="selectChallengeFriend(searchedForUser)">
+        <img ng-src="{{searchedForUser.img}}"/>
+        <h2>{{searchedForUser.name}}</h2>
+        <p>{{searchedForUser.email}}</p>
+      </ion-item>
+    </ion-list>
+
+
+
+
+  </ion-content>
+
+
+
+</ion-modal-view>

@@ -1,0 +1,43 @@
+<ion-view view-title="Dashboard">
+  <ion-content class="padding">
+    <div class="row" style="padding-top: 10px;">
+      <div class="col">
+        <img id="profileImg" ng-click="upload()" ng-src="{{user.img}}"/>
+      </div>
+      <div class="col col-75">
+        <div class="introWelcome" style="margin: 15px auto; font-size: 35px"> {{user.name}} </div>
+      </div>
+    </div>
+
+    <h3 style="text-align: center;color: #fff;">Accepted Challenges: 1</h3>
+    <hr>
+    <div class="card" ng-click="goChallenge()">
+      <div class="list"  >
+        <label class="item" >
+          <div style="text-align: center;" >
+            Meditate 20min/day
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <h3 style="text-align: center;color: #fff;">Open Challenges: {{openChallenges}}</h3>
+    <hr>
+
+    <div class="card" ng-hide="openChallenges == 0">
+      <div class="list"  >
+        <label class="item" >
+          <div style="text-align: center;">
+            Challenging {{friend}}
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div style="width: 100%; text-align: center;">
+      <button class="button button-assertive" style="margin-top: 12px;" ng-click="showModal()" >
+        Challenge Someone!
+      </button>
+    </div>
+  </ion-content>
+</ion-view>

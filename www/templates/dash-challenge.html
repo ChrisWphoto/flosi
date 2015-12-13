@@ -1,0 +1,38 @@
+<ion-view view-title="Challenge Time">
+  <ion-content class="padding">
+
+    <div class="versus-photo">
+    <img class="versus-profile" ng-src="{{user.challengeInvite.img}}">
+      <span id="versus-id">VS</span>
+    <img class="versus-profile" ng-src="{{user.img}}" >
+    </div>
+
+    <p>
+
+    </p>
+    <form class="list">
+      <ion-list>
+        <label class="item item-input">
+          <span class="input-label">Challenge Title</span>
+          <input type="text" placeholder="" ng-model="form.title">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">How Many Days</span>
+          <input type="text" placeholder="" ng-model="form.days">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">How Many Photos</span>
+          <input type="text" placeholder="" ng-model="form.numPhotos">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">What are you willing to Bet</span>
+          <input type="text" placeholder="" ng-model="form.bet">
+        </label>
+      </ion-list>
+      <button class="button button-stable button-block " ng-click="createChallenge(form)">Sign Up</button>
+
+
+
+
+  </ion-content>
+</ion-view>
