@@ -49,3 +49,14 @@
   color: white;
   padding: 0 20px 0 20px;
 }
+
+.dash-challenge-imgs {
+  width: 50px;
+  height: 50px;
+  border-radius: 55%;
+}
+
+.dash-card {
+  height: 65px;
+  color:red;
+}

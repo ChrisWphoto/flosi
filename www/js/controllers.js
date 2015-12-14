@@ -58,13 +58,27 @@ angular.module('flosi.controllers',
       $scope.user = auth.profile;
       console.log($scope.user)
 
-      auth.fbRef.child('users/' + $scope.user.uid + '/challenges').once('value', function(snap){
-        $scope.chalArray = snap.val();
-        //git rid of dummy first element in challenges array
-        auth.profile.challenges = $scope.chalArray;
-        //$scope.chalArray.splice(0,1);
+      $scope.$apply(function() {
+        //get challenges & data
+        $scope.challArray = [];
+        // fetch a list of Mary's groups
+        auth.fbRef.child('users/' + auth.profile.uid + '/challenges').on('child_added', function (snap) {
+          // for each challengeId, fetch challenge data
+          var challId = snap.val();
+          auth.fbRef.child("challenges/" + challId).once('value', function (snap) {
+            $scope.challArray.push(snap.val());
+          });
+        });
       });
+
+
+
     });
+
+
+
+
+
 
 
     $ionicModal.fromTemplateUrl('templates/modal-invite.html', {
@@ -163,6 +177,7 @@ angular.module('flosi.controllers',
         uid1: $scope.user.uid,
         name2: $scope.friend.name,
         uid2: $scope.friend.uid,
+        img2: $scope.friend.img,
         title: form.title,
         days: form.days,
         numPhotos: form.numPhotos,
@@ -208,7 +223,7 @@ angular.module('flosi.controllers',
       console.log(event)
     });
     console.log($scope.images);
-    $scope.images.$add({image : '/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXh'});
+
 
     $scope.upload = function () {
       var options = {

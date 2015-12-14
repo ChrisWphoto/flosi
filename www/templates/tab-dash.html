@@ -1,5 +1,5 @@
 <ion-view view-title="Dashboard">
-  <ion-content class="padding">
+  <ion-content class="padding" scroll="true">
     <div class="row" style="padding-top: 10px;">
       <div class="col">
         <img id="profileImg" ng-click="upload()" ng-src="{{user.img}}"/>
@@ -9,31 +9,24 @@
       </div>
     </div>
 
-    <h3 style="text-align: center;color: #fff;">Accepted Challenges: 1</h3>
-    <hr>
-    <div class="card" ng-repeat="card in chalArray"
-         ui-sref="tab.stream({streamId : card})" ng-hide="card == 1">
-      <div class="list"  >
-        <label class="item" >
-          <div style="text-align: center;" >
-            {{card}}
-          </div>
-        </label>
-      </div>
-    </div>
-
-    <h3 style="text-align: center;color: #fff;">Open Challenges: {{openChallenges}}</h3>
+    <h3 style="text-align: center;color: #fff;">Accepted Challenges</h3>
     <hr>
 
-    <div class="card" ng-hide="openChallenges == 0">
-      <div class="list"  >
-        <label class="item" >
-          <div style="text-align: center;">
-            Challenging {{friend}}
-          </div>
-        </label>
-      </div>
-    </div>
+
+
+     <ion-list>
+        <ion-item class="item-thumbnail-left" ng-repeat="card in challArray" ng-hide="card==null"
+          ui-sref="tab.stream({streamId : card.challengeId})">
+          <img ng-src="{{card.img2}}"/>
+          <h2>{{card.title}} with {{card.name2}} </h2>
+        </ion-item>
+        </ion-list>
+
+
+        <hr>
+
+
+
 
     <div style="width: 100%; text-align: center;">
       <button class="button button-assertive" style="margin-top: 12px;" ng-click="showModal()" >
