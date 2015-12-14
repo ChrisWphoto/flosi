@@ -13,6 +13,7 @@ $ sudo npm install -g ionic
 make sure you are inside the folder named flosi then
 
 ```javascript
+$ cordova plugin add org.apache.cordova.camera
 $ ionic serve
 ```
 This will launch a web browser and display the app
