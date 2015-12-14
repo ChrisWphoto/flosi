@@ -7,6 +7,9 @@ angular.module('flosi.controllers',
 
 
   .controller('loginCtrl', function ($rootScope, $scope, auth, $state) {
+
+
+
     $scope.submitLogin = function (form) {
       $rootScope.show();
       $scope.badLogin;
@@ -46,21 +49,21 @@ angular.module('flosi.controllers',
   })
 
   .controller('DashCtrl', function ($rootScope, $scope, auth, $cordovaCamera, $ionicModal, $state, authData) {
+
+    //todo resolve profile obj BEFORE I get here
+
     $scope.$on('$ionicView.enter', function (e) {
-      $rootScope.show();
-      console.log('checking if local profile exists', auth.profile.name)
-      if (!auth.profile.name) {
-        auth.profileFromFb(authData.uid).then(function (success) {
-          if (success) {
-            $scope.user = auth.profile;
-            console.log('$scope.user', $scope.user);
-          }
-          else console.log('profileNotPopulated', $scope.user)
-        })
-      } else {
-        $scope.user = auth.profile;
-      }
       $rootScope.hide();
+      console.log('resolve auth data', authData);
+      $scope.user = auth.profile;
+      console.log($scope.user)
+
+      auth.fbRef.child('users/' + $scope.user.uid + '/challenges').once('value', function(snap){
+        $scope.chalArray = snap.val();
+        //git rid of dummy first element in challenges array
+        auth.profile.challenges = $scope.chalArray;
+        //$scope.chalArray.splice(0,1);
+      });
     });
 
 
@@ -132,7 +135,15 @@ angular.module('flosi.controllers',
         throw " fatal error camera crashed unavailable";
       }
     }
+
+    $scope.goChallenge = function (chalId) {
+      console.log('going to challenge', chalId);
+      $state.go('tab.stream', { challengeId: chalId} );
+    }
+
   })
+
+
 
 
   .controller('InviteCtrl', function ($scope, auth, $state) {
@@ -166,26 +177,38 @@ angular.module('flosi.controllers',
       };
       console.log(challengeObj);
       auth.pushChallengeObj(challengeObj, $scope.friend, function (success) {
-        if (success) $state.go('tab.stream');
+        $state.go('tab.dash');
+        //if (success) //pass along challengeId too
+        //  $state.go('tab.stream', { challengeId: challengeObj.challengeId} );
       });
     };
+
+
 
   })
 
 
-  .controller('StreamCtrl', function ($scope, auth, $state, $cordovaCamera, $firebaseArray) {
+  .controller('StreamCtrl', function ($scope, auth, $state, $stateParams, $cordovaCamera, $firebaseArray, Challenge) {
     $scope.$on('$ionicView.enter', function (e) {
-      $scope.streamInfo = auth.currentChallenge;
-      $scope.userInfo = auth;
-      $scope.images = [];
+      $scope.challenge = Challenge;
+      $scope.user = auth.profile;
+      $scope.images;
+
     });
 
-    console.log(auth);
-    console.log($scope.streamInfo);
-    var fb = new Firebase("https://flosi.firebaseio.com/challenges");
-    var userReference = fb.child(String(auth.challenges));
-    var syncArray = $firebaseArray(userReference.child("images"));
+    console.log($scope.challenge);
+
+
+
+
+    var chalRef = auth.fbRef.child('challenges/' + String(Challenge.challengeId));
+    var syncArray = $firebaseArray(chalRef.child("images"));
     $scope.images = syncArray;
+    $scope.images.$watch(function (event) {
+      console.log(event)
+    });
+    console.log($scope.images);
+    $scope.images.$add({image : '/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXh'});
 
     $scope.upload = function () {
       var options = {
@@ -231,7 +254,7 @@ angular.module('flosi.controllers',
       };
       auth.tokExpires = false;
       setTimeout(function () {
-        $rootScope.hide()
+        $rootScope.hide();
         $state.go('login');
 
       }, 500)

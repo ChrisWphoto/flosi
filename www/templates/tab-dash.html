@@ -11,11 +11,12 @@
 
     <h3 style="text-align: center;color: #fff;">Accepted Challenges: 1</h3>
     <hr>
-    <div class="card" ng-click="goChallenge()">
+    <div class="card" ng-repeat="card in chalArray"
+         ui-sref="tab.stream({streamId : card})" ng-hide="card == 1">
       <div class="list"  >
         <label class="item" >
           <div style="text-align: center;" >
-            Meditate 20min/day
+            {{card}}
           </div>
         </label>
       </div>

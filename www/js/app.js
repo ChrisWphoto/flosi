@@ -53,11 +53,11 @@ angular.module('flosi', ['ionic', 'flosi.controllers', 'flosi.services', "fireba
       .state('login', {
         url: '/',
         templateUrl: 'templates/login.html',
-        controller: 'loginCtrl',
-        onEnter: function ($state, fbAuth) {
-          var hasSession = fbAuth.$getAuth();
-          if (hasSession) $state.go('tab.dash');
-        }
+        controller: 'loginCtrl'
+        //onEnter: function ($state, fbAuth) {
+        //  var hasSession = fbAuth.$getAuth();
+        //  if (hasSession) $state.go('tab.dash');
+        //}
       })
 
       .state('signup', {
@@ -72,10 +72,19 @@ angular.module('flosi', ['ionic', 'flosi.controllers', 'flosi.services', "fireba
         abstract: true,
         templateUrl: 'templates/tabs.html',
         resolve : {
-          authData : function(fbAuth, $state){
+          authData : function(fbAuth, auth, $state, $q){
+            var defer = $q.defer();
             var authData = fbAuth.$getAuth();
-            if (!authData) $state.go('login');
-            return authData;
+            if (!authData){
+              $state.go('login');
+              defer.reject("not logged in");
+            }
+            else {
+              auth.profileFromFb(authData.uid).then(function(data){
+                defer.resolve(true);
+              })
+            }
+            return defer.promise;
           }
         }
       })
@@ -125,7 +134,20 @@ angular.module('flosi', ['ionic', 'flosi.controllers', 'flosi.services', "fireba
         views: {
           'tab-chats': {
             templateUrl: 'templates/tab-stream.html',
-            controller: 'StreamCtrl'
+            controller: 'StreamCtrl',
+            params: [
+              'streamId'
+            ],
+            resolve: { //get specific challenge data fom fb
+              Challenge : function($stateParams, auth, $q){
+                var defer = $q.defer();
+                 auth.fbRef.child('challenges/'+ $stateParams.streamId)
+                  .once('value',function(snap){
+                  defer.resolve(snap.val());
+                });
+                return defer.promise;
+              }
+            }
           }
         }
       })

@@ -6,9 +6,9 @@
 
     <div class="card">
       <div class="item item-text-wrap">
-        <h1>{{streamInfo.title}} Challenge</h1>
-        <h3>with: {{streamInfo.name2}}</h3>
-        Length of Challenge: {{streamInfo.days}} <br/>
+        <h1>{{challenge.title}} Challenge</h1>
+        <h3>with: {{challenge.name2}}</h3>
+        Length of Challenge: {{challenge.days}} <br/>
         Number of photos you've uploaded: 3/10
 
       </div>
@@ -18,7 +18,7 @@
     <div class="list card" ng-repeat="image in images">
 
       <div class="item item-avatar">
-        <img ng-src="{{userInfo.img}}"/>
+        <img ng-src="{{user.img}}"/>
 
         <h2>PigHead</h2>
         <p>By Marmot Brains</p>

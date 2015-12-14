@@ -28,7 +28,7 @@ angular.module('flosi.services', ["firebase"])
       tokExpires: false,
       challengeInvite: false
     };
-    //console.log(o);
+    o.fbRef = new Firebase("https://flosi.firebaseio.com");
     var ref = new Firebase("https://flosi.firebaseio.com");
 
     o.registerUser = function (user) {
@@ -138,6 +138,14 @@ angular.module('flosi.services', ["firebase"])
       ref.child('challenges/' + o.challengeId).once('value', function (snap) {
         return snap.val();
       });
+    };
+
+    o.getAllChallengesById = function (uid) {
+      var defer = $q.defer();
+      ref.child('users/' + uid + '/challenges').once('value', function(snap){
+        defer.resolve(snap.val());
+        return defer.promise;
+      })
     };
 
 
